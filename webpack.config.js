@@ -38,7 +38,7 @@ module.exports = (env) => {
         mode: env.mode,
         entry: './src/index.tsx',
         output: {
-            path: __dirname + '/dist/',
+            path: __dirname + '/doc/',
         },
         module: {
             rules: [
