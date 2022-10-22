@@ -1,10 +1,10 @@
 import { lazy } from "react";
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createHashRouter, Navigate } from "react-router-dom";
 
 const MenuPage = lazy(() => import("../views/Menu"));
 const Settlement = lazy(() => import("../views/Settlement"));
 
-const router = createBrowserRouter([
+const router = createHashRouter([
 	{
 		path: "/",
 		element: <MenuPage />,
