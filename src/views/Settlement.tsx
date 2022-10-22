@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 export default function Payment() {
 	const navigate = useNavigate();
 	const [finished, setFinish] = useState<boolean>(false);
-    const seletedPizza = useAppSelector(seletedItems);
+	const seletedPizza = useAppSelector(seletedItems);
 	const total = useMemo(
 		() =>
-        seletedPizza.reduce((accu: number, pizza: IPizza) => {
+			seletedPizza.reduce((accu: number, pizza: IPizza) => {
 				accu += pizza.count * pizza.price;
 				return accu;
 			}, 0),
@@ -18,11 +18,22 @@ export default function Payment() {
 	);
 
 	const handleConfirm = async () => {
+		localStorage.clear();
 		setFinish(true);
 	};
+
+	const handleOrderMore = () => {
+		navigate("/");
+	};
 	return finished ? (
-		<div className="text-white text-xl tracking-wide font-mono">
-			Thanks for ordering!
+		<div className="flex flex-col justify-center gap-8 mt-28 text-white tracking-wide font-mono">
+			<span className="text-xl">Thanks for ordering!</span>
+			<button
+				className="font-sans bg-priceColor shadow-sm text-md rounded-sm px-6 py-2 transition ease-linear duration-150 hover:scale-95 active:scale-95 hover:bg-priceColor hover:text-slate-250 cursor-pointer"
+				onClick={handleOrderMore}
+			>
+				Order more
+			</button>
 		</div>
 	) : (
 		<div className="overflow-x-hidden relative min-w-[300px] flex flex-col gap-5 justify-between overflow-y-auto pt-12 px-8 pb-8 max-h-screen max-w-lg mx-auto rounded-md shadow-2xl bg-white">
@@ -36,7 +47,10 @@ export default function Payment() {
 			</div>
 			{seletedPizza.map((item: IPizza) => {
 				return (
-					<div className="md:flex md:space-y-4 md:space-x-4 border-b-slate-600 pb-8 border-b-2">
+					<div
+						key={item.id}
+						className="md:flex md:space-y-4 md:space-x-4 border-b-slate-600 pb-8 border-b-2"
+					>
 						<div className="relative shadow-md border-slate-150 p-2 rounded-md md:shrink-0">
 							<div className="absolute top-[-10px] right-[-15px] text-sm flex items-center justify-center rounded-full w-8 h-8 border-2 font-semibold border-slate-100 bg-slate-50 text-slate-400">
 								{item.count}
@@ -60,7 +74,7 @@ export default function Payment() {
 					Total: <span className="font-bold">${`${total}`}</span>
 				</div>
 				<div
-					className="font-sans bg-bg shadow-sm rounded-sm px-6 py-2 transition ease-linear duration-150 hover:scale-95 active:scale-95 hover:bg-priceColor hover:text-slate-250 text-white cursor-pointer"
+					className="font-sans bg-bodyBg shadow-sm rounded-md px-6 py-2 transition ease-linear duration-150 hover:scale-95 active:scale-95 hover:bg-priceColor hover:text-slate-250 text-white cursor-pointer"
 					onClick={handleConfirm}
 				>
 					Confirm

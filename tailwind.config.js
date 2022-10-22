@@ -6,7 +6,7 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                bg: 'var(--bg)',
+                bodyBg: 'var(--bg)',
                 cardBg: 'var(--card-bg)',
                 cardActiveBg: 'var(--card-selected-bg)',
                 priceColor: 'var(--price-color)',
