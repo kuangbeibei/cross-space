@@ -1,4 +1,4 @@
-import { StrictMode, Suspense, lazy } from "react";
+import { StrictMode, Suspense } from "react";
 import { Provider } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 import { Loading } from "./components";

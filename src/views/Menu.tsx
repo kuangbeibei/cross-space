@@ -6,19 +6,31 @@ import {
 	getMenuData,
 	menuAll,
 	selectedFlag,
-	setSelectedItems,
+	seletedItems,
+	setSelectedFromLocalStorage,
 } from "../store/menuSlice";
 import MenuItem from "../components/MenuItem";
 import { shoppingCart } from "../assets";
+import { getLocalStorage } from "../utils";
+import { StorageConsts } from "../constants";
 
 export default function MenuPage() {
 	const pizza = useAppSelector(menuAll);
 	const hasSelected = useAppSelector(selectedFlag);
+	const selected = useAppSelector(seletedItems);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		dispatch(getMenuData());
+		const storageData = getLocalStorage(StorageConsts.SELECTED_ITEMS);
+		if (storageData) {
+			dispatch(
+				setSelectedFromLocalStorage({
+					data: storageData,
+				})
+			);
+		}
 	}, []);
 
 	return (
@@ -29,13 +41,12 @@ export default function MenuPage() {
 
 			{hasSelected && (
 				<div
-					className="fixed bottom-12 right-6 border-2 flex justify-center items-center cursor-pointer rounded-full p-1 backdrop-blur-sm bg-white/75 hover:backdrop-blur-lg hover:bg-white/50"
+					className="fixed bottom-12 right-6 border-2 flex justify-center items-center cursor-pointer rounded-full p-1 backdrop-blur-sm bg-white/75 hover:backdrop-blur-lg"
 					onClick={() => {
-						dispatch(setSelectedItems());
 						navigate("/settlement");
 					}}
 				>
-					<span className="absolute top-0 left-0 flex h-2 w-2">
+					<span className="absolute top-0 left-0 flex h-2 w-2 z-20">
 						<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
 						<span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
 					</span>

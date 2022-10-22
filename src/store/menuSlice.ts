@@ -42,6 +42,16 @@ const isNumber = (num: any) => {
     return Object.prototype.toString.call(num) === '[object Number]' ? num : 0
 }
 
+// 获取已经添加的菜单
+function getSelectedItems(allItems: IPizza[]) {
+    return allItems.reduce((accu: IPizza[], cur: IPizza) => {
+        if (cur.count > 0) {
+            accu.push(cur);
+        }
+        return accu;
+    }, []);
+}
+
 const verifyNumber = (count: any) => {
     if (isNumber(count)) {
         if (count > 10) count = 10;
@@ -67,6 +77,7 @@ export const menuSlice = createSlice({
             const { count } = (state.value)[idx];
             (state.value)[idx].count = count >= 10 ? count : count + 1;
             state.hasSelected = checkIfSelected(state.value);
+            state.selected = getSelectedItems(state.hasSelected ? state.value : [])
         },
         minusByOne: (state, action: PayloadAction<{
             id: string,
@@ -75,6 +86,7 @@ export const menuSlice = createSlice({
             const { count } = (state.value)[idx];
             (state.value)[idx].count = count > 0 ? count - 1 : count;
             state.hasSelected = checkIfSelected(state.value);
+            state.selected = getSelectedItems(state.hasSelected ? state.value : [])
         },
         setCountByAmount: (state, action: PayloadAction<{
             id: string,
@@ -84,15 +96,20 @@ export const menuSlice = createSlice({
             const count = verifyNumber(action.payload.count);
             (state.value)[idx].count = count;
             state.hasSelected = checkIfSelected(state.value);
+            state.selected = getSelectedItems(state.hasSelected ? state.value : [])
         },
-        setSelectedItems: (state) => {
-            state.selected = state.value.reduce((accu: IPizza[], cur: IPizza) => {
-                if (cur.count > 0) {
-                    accu.push(cur);
-                }
-                return accu;
-            }, []);
+        setSelectedFromLocalStorage: (state, action: PayloadAction<{ data: IPizza[] }>) => {
+            const { data } = action.payload;
+            if (data && data.length) {
+                state.hasSelected = true;
+            } else {
+                state.hasSelected = false;
+            }
+            state.selected = action.payload.data || [];
         },
+        clearSelectedData: (state) => {
+            state.selected = [];
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -101,7 +118,10 @@ export const menuSlice = createSlice({
             })
             .addCase(getMenuData.fulfilled, (state, action) => {
                 state.status = IStatus.IDLE;
-                state.value = action.payload;
+                state.value = action.payload.map((item: IPizza) => {
+                    const _item = state.selected.find((i) => i.id === item.id);
+                    return _item || item;
+                });
             })
             .addCase(getMenuData.rejected, (state) => {
                 state.status = IStatus.FAILED;
@@ -113,6 +133,6 @@ export const menuAll = (state: RootState) => state.menu.value;
 export const selectedFlag = (state: RootState) => state.menu.hasSelected;
 export const seletedItems = (state: RootState) => state.menu.selected;
 
-export const { addByOne, minusByOne, setCountByAmount, setSelectedItems } = menuSlice.actions;
+export const { addByOne, minusByOne, setCountByAmount, setSelectedFromLocalStorage, clearSelectedData } = menuSlice.actions;
 
 export default menuSlice.reducer;

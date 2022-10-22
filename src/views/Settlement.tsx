@@ -1,11 +1,31 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { IPizza } from "../data/db";
-import { useAppSelector } from "../hooks";
-import { seletedItems } from "../store/menuSlice";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import {
+	clearSelectedData,
+	seletedItems,
+	setSelectedFromLocalStorage,
+} from "../store/menuSlice";
 import { useNavigate } from "react-router-dom";
+import { StorageConsts } from "../constants";
+import { getLocalStorage, clearLocalStorage } from "../utils";
 
 export default function Payment() {
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+	useEffect(() => {
+		if (!getLocalStorage(StorageConsts.SELECTED_ITEMS)) {
+			navigate("/");
+		} else {
+			const storageData = getLocalStorage(StorageConsts.SELECTED_ITEMS);
+			dispatch(
+				setSelectedFromLocalStorage({
+					data: storageData,
+				})
+			);
+		}
+	}, []);
+
 	const [finished, setFinish] = useState<boolean>(false);
 	const seletedPizza = useAppSelector(seletedItems);
 	const total = useMemo(
@@ -17,9 +37,10 @@ export default function Payment() {
 		[useAppSelector(seletedItems)]
 	);
 
-	const handleConfirm = async () => {
-		localStorage.clear();
+	const handleConfirm = () => {
 		setFinish(true);
+		clearLocalStorage();
+		dispatch(clearSelectedData());
 	};
 
 	const handleOrderMore = () => {

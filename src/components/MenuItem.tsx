@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { IPizza } from "../data/db";
 import {
 	addByOne,
@@ -7,12 +7,26 @@ import {
 	setCountByAmount,
 } from "../store/menuSlice";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { clearLocalStorage, setLocalStorage } from "../utils";
+import { StorageConsts } from "../constants";
 
 const MenuItem: FC<{
 	item: IPizza;
 }> = ({ item }) => {
 	const dispatch = useAppDispatch();
-	const selectedDataFromStore = useAppSelector(seletedItems);
+	const selected = useAppSelector(seletedItems);
+
+	useEffect(() => {
+		if (selected.length) {
+			setLocalStorage(StorageConsts.SELECTED_ITEMS, selected);
+		}
+	}, []);
+
+	useEffect(() => {
+		if (selected) {
+			setLocalStorage(StorageConsts.SELECTED_ITEMS, selected);
+		}
+	}, [selected]);
 
 	return (
 		<div
