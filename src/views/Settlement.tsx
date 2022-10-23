@@ -1,15 +1,12 @@
 import { useMemo } from "react";
 import { IPizza } from "../data/db";
-import { useAppDispatch, useAppSelector, useInitAndCheckData } from "../hooks";
+import { useAppDispatch, useInitAndCheckData } from "../hooks";
 import {
 	clearSelectedData,
-	selectedFlag,
-	seletedItems,
 } from "../store/menuSlice";
 import { useNavigate } from "react-router-dom";
-import { clearLocalStorage, getLocalStorage } from "../utils";
+import { clearLocalStorage } from "../utils";
 import { LazyLoadImg, OperationPanel } from "../components";
-import { StorageConsts } from "../constants";
 
 export default function Payment() {
 	const navigate = useNavigate();
