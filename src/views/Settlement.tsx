@@ -1,48 +1,39 @@
-import { useState, useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import { IPizza } from "../data/db";
 import { useAppDispatch, useAppSelector, useInitAndCheckData } from "../hooks";
-import { clearSelectedData, seletedItems } from "../store/menuSlice";
+import {
+	clearSelectedData,
+	selectedFlag,
+	seletedItems,
+} from "../store/menuSlice";
 import { useNavigate } from "react-router-dom";
-import { clearLocalStorage } from "../utils";
+import { clearLocalStorage, getLocalStorage } from "../utils";
 import { LazyLoadImg, OperationPanel } from "../components";
+import { StorageConsts } from "../constants";
 
 export default function Payment() {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
-	useInitAndCheckData(true);
+	const { selected } = useInitAndCheckData(true);
 
-	const [finished, setFinish] = useState<boolean>(false);
-	const seletedPizza = useAppSelector(seletedItems);
 	const total = useMemo(
 		() =>
-			seletedPizza.reduce((accu: number, pizza: IPizza) => {
+			selected.reduce((accu: number, pizza: IPizza) => {
 				accu += pizza.count * pizza.price;
 				return accu;
 			}, 0),
-		[useAppSelector(seletedItems)]
+		[selected]
 	);
 
 	const handleConfirm = () => {
-		setFinish(true);
+		alert('Thanks for ordering!')
+		navigate("/");
 		clearLocalStorage();
 		dispatch(clearSelectedData());
 	};
 
-	const handleOrderMore = () => {
-		navigate("/");
-	};
-	return finished ? (
-		<div className="flex flex-col justify-center gap-8 mt-28 text-white tracking-wide font-mono">
-			<span className="text-xl">Thanks for ordering!</span>
-			<button
-				className="font-sans bg-priceColor shadow-sm text-md rounded-sm px-6 py-2 transition ease-linear duration-150 hover:scale-95 active:scale-95 hover:bg-priceColor hover:text-slate-250 cursor-pointer"
-				onClick={handleOrderMore}
-			>
-				Order more
-			</button>
-		</div>
-	) : (
+	return (
 		<div className="overflow-x-hidden relative min-w-[300px] flex flex-col gap-5 justify-between overflow-y-auto pt-12 px-8 pb-8 max-h-screen max-w-lg mx-auto rounded-md shadow-2xl bg-white">
 			<div
 				className="absolute left-4 top-2 cursor-pointer transition ease-linear duration-150"
@@ -52,8 +43,8 @@ export default function Payment() {
 					←
 				</span>
 			</div>
-			{seletedPizza.length > 0 &&
-				seletedPizza.map((item: IPizza) => {
+			{selected.length > 0 &&
+				selected.map((item: IPizza) => {
 					return (
 						<div
 							key={item.id}

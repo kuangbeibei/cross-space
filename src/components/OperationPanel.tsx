@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { addByOne, minusByOne, setCountByAmount } from "../store/menuSlice";
-import { useAppDispatch, useAppSelector } from "../hooks";
+import { useAppDispatch } from "../hooks";
 import { IPizza } from "../data/db";
 
 const OperationPanel: FC<{ item: IPizza; isOrderPage?: boolean }> = ({
