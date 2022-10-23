@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { StorageConsts } from '../constants';
 import { IPizza } from '../data/db';
 import type { RootState, AppDispatch } from '../store';
-import { getMenuData, seletedItems, setSelectedFromLocalStorage } from '../store/menuSlice';
+import { getMenuData, selectedFlag, seletedItems, setSelectedFromLocalStorage } from '../store/menuSlice';
 import { getLocalStorage, setLocalStorage } from '../utils';
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
@@ -18,9 +18,11 @@ export const useInitAndCheckData = (isOrderPage?: boolean) => {
     const selected = useAppSelector(seletedItems);
 
     useEffect(() => {
+        // 一进页面请求数据
         dispatch(getMenuData());
+        // 从localStorage中获取是否有已选菜品
         const storageData = getLocalStorage(StorageConsts.SELECTED_ITEMS);
-        if (storageData) {
+        if (storageData && storageData.length) {
             setStorageData(storageData);
             dispatch(
                 setSelectedFromLocalStorage({
@@ -31,16 +33,13 @@ export const useInitAndCheckData = (isOrderPage?: boolean) => {
     }, []);
 
     useEffect(() => {
-        if (selected.length) {
-            setLocalStorage(StorageConsts.SELECTED_ITEMS, selected);
-        } else {
-            setLocalStorage(StorageConsts.SELECTED_ITEMS, []);
-            if (isOrderPage) {
+        setLocalStorage(StorageConsts.SELECTED_ITEMS, selected.length ? selected : null);
+        Promise.resolve().then(() => {
+            if (getLocalStorage(StorageConsts.SELECTED_ITEMS) === null && isOrderPage) {
                 navigate('/')
             }
-        }
+        })
     }, [selected]);
-
 
     return {
         storageData,

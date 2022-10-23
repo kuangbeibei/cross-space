@@ -92,12 +92,8 @@ export const menuSlice = createSlice({
         },
         setSelectedFromLocalStorage: (state, action: PayloadAction<{ data: IPizza[] }>) => {
             const { data } = action.payload;
-            if (data && data.length) {
-                state.hasSelected = true;
-            } else {
-                state.hasSelected = false;
-            }
-            state.selected = action.payload.data || [];
+            state.hasSelected = true;
+            state.selected = action.payload.data;
         },
         clearSelectedData: (state) => {
             state.selected = [];
@@ -107,7 +103,6 @@ export const menuSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getMenuData.fulfilled, (state, action) => {
-
                 state.value = action.payload.map((item: IPizza) => {
                     const _item = state.selected.find((i) => i.id === item.id);
                     return _item || item;
