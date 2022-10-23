@@ -7,8 +7,9 @@ import {
 	setCountByAmount,
 } from "../store/menuSlice";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { clearLocalStorage, setLocalStorage } from "../utils";
+import { setLocalStorage } from "../utils";
 import { StorageConsts } from "../constants";
+import { LazyLoadImg } from "../components";
 
 const MenuItem: FC<{
 	item: IPizza;
@@ -36,10 +37,10 @@ const MenuItem: FC<{
 		>
 			<div className="md:flex">
 				<div className="md:shrink-0">
-					<img
-						className="h-48 w-full object-cover md:h-full md:w-48"
-						src={item.picture}
-						alt="pizza picture"
+					<LazyLoadImg
+						picture={item.picture}
+						wrapperCls="md:w-48 object-cover h-48 w-full md:h-full"
+						clsName="gallery-img md:h-full object-cover"
 					/>
 				</div>
 				<div className="p-8 min-w-[300px]">

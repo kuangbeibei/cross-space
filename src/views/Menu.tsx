@@ -9,7 +9,7 @@ import {
 	seletedItems,
 	setSelectedFromLocalStorage,
 } from "../store/menuSlice";
-import MenuItem from "../components/MenuItem";
+import { MenuItem } from "../components";
 import { shoppingCart } from "../assets";
 import { getLocalStorage } from "../utils";
 import { StorageConsts } from "../constants";
@@ -17,7 +17,6 @@ import { StorageConsts } from "../constants";
 export default function MenuPage() {
 	const pizza = useAppSelector(menuAll);
 	const hasSelected = useAppSelector(selectedFlag);
-	const selected = useAppSelector(seletedItems);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
@@ -35,9 +34,8 @@ export default function MenuPage() {
 
 	return (
 		<main className="relative pt-6 pb-6 flex flex-wrap items-center justify-center gap-10 max-w-4/5 mx-auto">
-			{pizza.map((item: IPizza) => (
-				<MenuItem key={item.id} item={item} />
-			))}
+			{pizza.length > 0 &&
+				pizza.map((item: IPizza) => <MenuItem key={item.id} item={item} />)}
 
 			{hasSelected && (
 				<div
