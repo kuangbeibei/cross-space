@@ -1,36 +1,19 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { IPizza } from "../data/db";
-import { useAppSelector, useAppDispatch } from "../hooks";
+import { useAppSelector, useInitAndCheckData } from "../hooks";
 import {
-	getMenuData,
 	menuAll,
 	selectedFlag,
-	seletedItems,
-	setSelectedFromLocalStorage,
 } from "../store/menuSlice";
 import { MenuItem } from "../components";
 import { shoppingCart } from "../assets";
-import { getLocalStorage } from "../utils";
-import { StorageConsts } from "../constants";
 
 export default function MenuPage() {
 	const pizza = useAppSelector(menuAll);
 	const hasSelected = useAppSelector(selectedFlag);
-	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		dispatch(getMenuData());
-		const storageData = getLocalStorage(StorageConsts.SELECTED_ITEMS);
-		if (storageData) {
-			dispatch(
-				setSelectedFromLocalStorage({
-					data: storageData,
-				})
-			);
-		}
-	}, []);
+	useInitAndCheckData()
 
 	return (
 		<main className="relative pt-6 pb-6 flex flex-wrap items-center justify-center gap-10 max-w-4/5 mx-auto">

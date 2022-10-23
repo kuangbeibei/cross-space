@@ -101,6 +101,7 @@ export const menuSlice = createSlice({
         },
         clearSelectedData: (state) => {
             state.selected = [];
+            state.hasSelected = false;
         }
     },
     extraReducers: (builder) => {

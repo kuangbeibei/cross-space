@@ -1,31 +1,29 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect} from "react";
 import { IPizza } from "../data/db";
-import { useAppDispatch, useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector, useInitAndCheckData } from "../hooks";
 import {
 	clearSelectedData,
 	seletedItems,
-	setSelectedFromLocalStorage,
 } from "../store/menuSlice";
 import { useNavigate } from "react-router-dom";
-import { StorageConsts } from "../constants";
-import { getLocalStorage, clearLocalStorage } from "../utils";
-import { LazyLoadImg } from "../components";
+import { clearLocalStorage } from "../utils";
+import { LazyLoadImg, OperationPanel } from "../components";
 
 export default function Payment() {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
+
+	const {
+		storageData,
+		selected
+	} = useInitAndCheckData();
+
 	useEffect(() => {
-		const storageData = getLocalStorage(StorageConsts.SELECTED_ITEMS) ;
-		if (!storageData) {
-			navigate("/");
-		} else {
-			dispatch(
-				setSelectedFromLocalStorage({
-					data: storageData,
-				})
-			);
-		}
-	}, []);
+	  if (!storageData || !selected) {
+		navigate('/')
+	  }
+	}, [storageData, selected])
+	
 
 	const [finished, setFinish] = useState<boolean>(false);
 	const seletedPizza = useAppSelector(seletedItems);
@@ -78,14 +76,18 @@ export default function Payment() {
 								<div className="absolute top-[-10px] right-[-15px] text-sm flex items-center justify-center rounded-full w-8 h-8 border-2 font-semibold border-slate-100 bg-slate-50 text-slate-400">
 									{item.count}
 								</div>
-								<LazyLoadImg clsName="h-48 w-full object-cover sm:w-48 sm:h-full" wrapperCls="h-48 w-full object-cover sm:w-48 sm:h-full" picture={item.picture}/>
-								
+								<LazyLoadImg
+									clsName="h-48 w-full object-cover sm:w-48 sm:h-full"
+									wrapperCls="h-48 w-full object-cover sm:w-48 sm:h-full"
+									picture={item.picture}
+								/>
 							</div>
 							<div className="mt-6 uppercase tracking-wide text-sm text-slate-600 font-semibold self-start">
 								<span>{item.name}</span>
 								<div className="font-mono text-lg text-priceActiveColor">
 									${`${Number(item.price) * Number(item.count)}`}
 								</div>
+								<OperationPanel item={item} isOrderPage />
 							</div>
 						</div>
 					);
