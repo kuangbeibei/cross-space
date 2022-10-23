@@ -1,33 +1,15 @@
 import { FC, useEffect } from "react";
 import { IPizza } from "../data/db";
-import {
-	addByOne,
-	minusByOne,
-	seletedItems,
-	setCountByAmount,
-} from "../store/menuSlice";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { clearLocalStorage, setLocalStorage } from "../utils";
+import { seletedItems } from "../store/menuSlice";
+import { useAppSelector } from "../hooks";
+import { setLocalStorage } from "../utils";
 import { StorageConsts } from "../constants";
+import { LazyLoadImg, OperationPanel } from "../components";
 
 const MenuItem: FC<{
 	item: IPizza;
 }> = ({ item }) => {
-	const dispatch = useAppDispatch();
-	const selected = useAppSelector(seletedItems);
-
-	useEffect(() => {
-		if (selected.length) {
-			setLocalStorage(StorageConsts.SELECTED_ITEMS, selected);
-		}
-	}, []);
-
-	useEffect(() => {
-		if (selected) {
-			setLocalStorage(StorageConsts.SELECTED_ITEMS, selected);
-		}
-	}, [selected]);
-
+	
 	return (
 		<div
 			className={`hover:drop-shadow-lg active:drop-shadow-lg hover:scale-105 active:scale-105 transition ease-linear duration-150 min-w-[300px] max-w-sm mx-auto rounded-xl relative overflow-hidden md:max-w-xl shadow-lg shadow-black-500/40 ${
@@ -36,10 +18,10 @@ const MenuItem: FC<{
 		>
 			<div className="md:flex">
 				<div className="md:shrink-0">
-					<img
-						className="h-48 w-full object-cover md:h-full md:w-48"
-						src={item.picture}
-						alt="pizza picture"
+					<LazyLoadImg
+						picture={item.picture}
+						wrapperCls="md:w-48 object-cover h-48 w-full md:h-full"
+						clsName="gallery-img md:h-full object-cover"
 					/>
 				</div>
 				<div className="p-8 min-w-[300px]">
@@ -52,45 +34,7 @@ const MenuItem: FC<{
 								{item.desc}
 							</span>
 							<p className="mt-2 text-slate-500">Add to cart:</p>
-							<div className="mt-4 flex gap-2 justify-start">
-								<button
-									onClick={() => {
-										dispatch(
-											minusByOne({
-												id: item.id,
-											})
-										);
-									}}
-									className="w-10 h-10 bg-stone-800 rounded-lg text-white font-sm md:font-lg px-3 py-1 hover:bg-stone-600 active:scale-95"
-								>
-									-
-								</button>
-								<input
-									value={item.count}
-									onChange={(e) => {
-										dispatch(
-											setCountByAmount({
-												id: item.id,
-												count: Number(e.target.value),
-											})
-										);
-									}}
-									placeholder="0"
-									className="w-14 h-10 rounded-md py-1 px-2 outline-none focus:ring-gray-200 focus:ring-2 default:ring-1"
-								/>
-								<button
-									onClick={() =>
-										dispatch(
-											addByOne({
-												id: item.id,
-											})
-										)
-									}
-									className="w-10 h-10 bg-stone-800 rounded-lg text-white font-sm md:font-lg px-3 py-1 hover:bg-stone-600 active:scale-95"
-								>
-									+
-								</button>
-							</div>
+							<OperationPanel item={item} />
 						</div>
 						<div
 							className={`flex justify-end gap-1 ${
