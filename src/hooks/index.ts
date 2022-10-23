@@ -16,6 +16,7 @@ export const useInitAndCheckData = (isOrderPage?: boolean) => {
     const navigate = useNavigate();
     const [storageData, setStorageData] = useState<Array<IPizza>>([]);
     const selected = useAppSelector(seletedItems);
+
     useEffect(() => {
         dispatch(getMenuData());
         const storageData = getLocalStorage(StorageConsts.SELECTED_ITEMS);
@@ -34,6 +35,9 @@ export const useInitAndCheckData = (isOrderPage?: boolean) => {
             setLocalStorage(StorageConsts.SELECTED_ITEMS, selected);
         } else {
             setLocalStorage(StorageConsts.SELECTED_ITEMS, []);
+            if (isOrderPage) {
+                navigate('/')
+            }
         }
     }, [selected]);
 

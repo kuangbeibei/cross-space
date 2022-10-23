@@ -1,10 +1,7 @@
-import { useState, useMemo, useEffect} from "react";
+import { useState, useMemo, useEffect } from "react";
 import { IPizza } from "../data/db";
 import { useAppDispatch, useAppSelector, useInitAndCheckData } from "../hooks";
-import {
-	clearSelectedData,
-	seletedItems,
-} from "../store/menuSlice";
+import { clearSelectedData, seletedItems } from "../store/menuSlice";
 import { useNavigate } from "react-router-dom";
 import { clearLocalStorage } from "../utils";
 import { LazyLoadImg, OperationPanel } from "../components";
@@ -13,17 +10,7 @@ export default function Payment() {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
-	const {
-		storageData,
-		selected
-	} = useInitAndCheckData();
-
-	useEffect(() => {
-	  if (!storageData || !selected) {
-		navigate('/')
-	  }
-	}, [storageData, selected])
-	
+	useInitAndCheckData(true);
 
 	const [finished, setFinish] = useState<boolean>(false);
 	const seletedPizza = useAppSelector(seletedItems);
