@@ -11,22 +11,14 @@ export const getMenuData = createAsyncThunk(
     }
 );
 
-enum IStatus {
-    IDLE = 'idle',
-    LOADING = 'loading',
-    FAILED = 'failed',
-}
-
 export interface IMenuState {
     value: IPizza[];
-    status: IStatus;
     selected: IPizza[];
     hasSelected: boolean
 }
 
 const initialState: IMenuState = {
     value: [],
-    status: IStatus.IDLE,
     selected: [],
     hasSelected: false
 };
@@ -113,19 +105,13 @@ export const menuSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getMenuData.pending, (state) => {
-                state.status = IStatus.LOADING;
-            })
             .addCase(getMenuData.fulfilled, (state, action) => {
-                state.status = IStatus.IDLE;
+
                 state.value = action.payload.map((item: IPizza) => {
                     const _item = state.selected.find((i) => i.id === item.id);
                     return _item || item;
                 });
             })
-            .addCase(getMenuData.rejected, (state) => {
-                state.status = IStatus.FAILED;
-            });
     },
 });
 

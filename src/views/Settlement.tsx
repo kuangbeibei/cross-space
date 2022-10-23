@@ -15,10 +15,10 @@ export default function Payment() {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	useEffect(() => {
-		if (!getLocalStorage(StorageConsts.SELECTED_ITEMS)) {
+		const storageData = getLocalStorage(StorageConsts.SELECTED_ITEMS) ;
+		if (!storageData) {
 			navigate("/");
 		} else {
-			const storageData = getLocalStorage(StorageConsts.SELECTED_ITEMS);
 			dispatch(
 				setSelectedFromLocalStorage({
 					data: storageData,
