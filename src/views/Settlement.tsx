@@ -27,6 +27,7 @@ export default function Payment() {
 	);
 
 	const handleConfirm = () => {
+		alert('Thanks for ordering!')
 		navigate("/");
 		clearLocalStorage();
 		dispatch(clearSelectedData());
